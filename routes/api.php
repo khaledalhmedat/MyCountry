@@ -36,3 +36,29 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [ComplaintController::class, 'getUserComplaints']);
     });
 });
+
+
+
+
+use App\Http\Controllers\AuthController as EmployeeAuthController;
+use App\Http\Controllers\EmployeeController as AdminEmployeeController;
+
+Route::prefix('employee')->group(function () {
+    Route::post('/login', [EmployeeAuthController::class, 'login']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [EmployeeAuthController::class, 'logout']);
+        Route::get('/me', [EmployeeAuthController::class, 'me']);
+    });
+});
+
+Route::prefix('admin')->group(function () {
+    Route::prefix('employees')->group(function () {
+        Route::post('/', [AdminEmployeeController::class, 'createEmployee']);
+        Route::get('/', [AdminEmployeeController::class, 'getAllEmployees']);
+        Route::get('/type/{typeId}', [AdminEmployeeController::class, 'getEmployeesByType']);
+        Route::get('/{id}', [AdminEmployeeController::class, 'getEmployee']);
+        Route::put('/{id}', [AdminEmployeeController::class, 'updateEmployee']);
+        Route::delete('/{id}', [AdminEmployeeController::class, 'deleteEmployee']);
+    });
+});
