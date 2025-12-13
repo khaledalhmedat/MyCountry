@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ComplaintController;
+
 
 
 
@@ -28,4 +30,9 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/verify-otp', [LoginController::class, 'verifyOtp']);
 
-
+Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('citizen/complaints')->group(function () {
+        Route::post('/submit', [ComplaintController::class, 'submitComplaint']);
+        Route::get('/', [ComplaintController::class, 'getUserComplaints']);
+    });
+});

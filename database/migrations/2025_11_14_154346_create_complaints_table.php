@@ -13,16 +13,19 @@ return new class extends Migration
     {
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
-            $table->string('destination');
-            $table->string('site');
-            $table->string('description');
-            $table->string('image');
-            $table->string('documents');
+            $table->string('destination'); 
+            $table->string('site'); 
+            $table->text('description'); 
+            $table->string('image')->nullable();
+            $table->text('notes')->nullable(); 
+            $table->string('documents')->nullable(); 
             $table->unsignedBigInteger('type_id');
-            $table->string('status')->default('new');
+            $table->unsignedBigInteger('user_id');
+            $table->string('status')->default('جديدة');
             $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('types')->ondelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade');
         });
     }
 
