@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\DashboardController;
+
+
 
 
 
@@ -48,17 +51,16 @@ Route::prefix('employee')->group(function () {
     
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [EmployeeAuthController::class, 'logout']);
-        Route::get('/me', [EmployeeAuthController::class, 'me']);
+
+         Route::put('complaints/{id}/status', [DashboardController::class, 'updateComplaintStatus']);
+        Route::post('complaints/{id}/notes', [DashboardController::class, 'addComplaintNotes']);
+        Route::get('complaints', [DashboardController::class, 'getEmployeeComplaints']);
+
     });
 });
 
 Route::prefix('admin')->group(function () {
     Route::prefix('employees')->group(function () {
         Route::post('/', [AdminEmployeeController::class, 'createEmployee']);
-        Route::get('/', [AdminEmployeeController::class, 'getAllEmployees']);
-        Route::get('/type/{typeId}', [AdminEmployeeController::class, 'getEmployeesByType']);
-        Route::get('/{id}', [AdminEmployeeController::class, 'getEmployee']);
-        Route::put('/{id}', [AdminEmployeeController::class, 'updateEmployee']);
-        Route::delete('/{id}', [AdminEmployeeController::class, 'deleteEmployee']);
     });
 });

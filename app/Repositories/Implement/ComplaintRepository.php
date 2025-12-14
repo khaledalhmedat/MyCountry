@@ -4,6 +4,7 @@ namespace App\Repositories\Implement;
 
 use App\Repositories\Interfaces\ComplaintRepositoryInterface;
 use App\Models\Complaint;
+use App\Models\Employee;
 
 class ComplaintRepository implements ComplaintRepositoryInterface
 {
@@ -32,25 +33,9 @@ class ComplaintRepository implements ComplaintRepositoryInterface
         return $this->model->with(['user', 'type'])->find($id);
     }
 
-    public function updateComplaintStatus($id, $status)
-    {
-        $complaint = $this->model->find($id);
-        if ($complaint) {
-            $complaint->status = $status;
-            $complaint->save();
-            return $complaint;
-        }
-        return null;
-    }
+    
 
-    public function addNotesToComplaint($id, $notes)
-    {
-        $complaint = $this->model->find($id);
-        if ($complaint) {
-            $complaint->notes = $notes;
-            $complaint->save();
-            return $complaint;
-        }
-        return null;
-    }
+  
+
+    
 }

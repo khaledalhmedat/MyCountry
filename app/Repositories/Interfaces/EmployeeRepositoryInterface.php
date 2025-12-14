@@ -11,4 +11,12 @@ interface EmployeeRepositoryInterface
     public function deleteEmployee($id);
     public function getAllEmployees();
     public function getEmployeesByType($typeId);
+
+      public function updateComplaintStatus($complaintId, $status, $employeeId);
+    
+    
+    public function addComplaintNotes($complaintId, $notes, $employeeId);
+
+        public function getComplaintsByEmployeeType($employeeId);
+
 }
