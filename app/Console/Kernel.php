@@ -12,7 +12,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // نسخ احتياطي أسبوعي كل يوم أحد الساعة 2:00 صباحاً
+        $schedule->command('db:backup')
+            ->weekly()
+            ->sundays()
+            ->at('02:00')
+            ->timezone('Asia/Riyadh')
+            ->appendOutputTo(storage_path('logs/backup.log'));
+        
+        // إضافة نسخ يومية للجدول المهمة فقط
+        $schedule->command('db:backup --tables=complaints,users')
+            ->daily()
+            ->at('01:00')
+            ->timezone('Asia/Riyadh');
     }
 
     /**

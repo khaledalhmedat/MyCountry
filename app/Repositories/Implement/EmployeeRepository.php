@@ -88,16 +88,13 @@ class EmployeeRepository implements EmployeeRepositoryInterface
             return null;
         }
         
-        // تحديث الحالة
         $complaint->status = $status;
         $complaint->save();
         
         return $complaint;
     }
     
-    /**
-     * إضافة ملاحظات للشكوى
-     */
+    
     public function addComplaintNotes($complaintId, $notes, $employeeId)
     {
         $complaint = Complaint::find($complaintId);
@@ -106,11 +103,9 @@ class EmployeeRepository implements EmployeeRepositoryInterface
             return null;
         }
         
-        // الحصول على اسم الموظف
         $employee = Employee::find($employeeId);
         $employeeName = $employee ? $employee->name : 'موظف';
         
-        // إضافة الملاحظات مع التاريخ واسم الموظف
         $currentNotes = $complaint->notes ? $complaint->notes . "\n\n" : "";
         $timestamp = now()->format('Y-m-d H:i');
         $newNote = "[{$timestamp}] - {$employeeName}: {$notes}";
@@ -123,17 +118,15 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
      public function getComplaintsByEmployeeType($employeeId)
     {
-        // الحصول على بيانات الموظف
         $employee = Employee::find($employeeId);
         
         if (!$employee || !$employee->type_id) {
-            return collect(); // إرجاع مجموعة فارغة
+            return collect(); 
         }
         
-        // جلب الشكاوى حسب type_id الخاص بالموظف
         $complaints = Complaint::where('type_id', $employee->type_id)
-            ->with(['user', 'type']) // تحميل بيانات المستخدم والنوع
-            ->orderBy('created_at', 'desc') // ترتيب من الأحدث للأقدم
+            ->with(['user', 'type']) 
+            ->orderBy('created_at', 'desc') 
             ->get();
         
         return $complaints;

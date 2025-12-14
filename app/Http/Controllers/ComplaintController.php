@@ -46,6 +46,14 @@ class ComplaintController extends Controller
             ], 422);
         }
 
+  if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $dest = 'image/';
+
+                $data = time() . '.' . $image->getClientOriginalExtension();
+                $image->move($dest,$data);
+            }
+
         try {
             $complaintData = [
                 'user_id' => $user->id,
@@ -53,13 +61,11 @@ class ComplaintController extends Controller
                 'destination' => $request->destination,
                 'site' => $request->site,
                 'description' => $request->description,
-                'status' => 'new'
+                'status' => 'new',
+                'image' => '/image/' . $data ?? ''
             ];
 
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('complaints/images', 'public');
-                $complaintData['image'] = $imagePath;
-            }
+          
 
             if ($request->hasFile('documents')) {
                 $docPath = $request->file('documents')->store('complaints/documents', 'public');

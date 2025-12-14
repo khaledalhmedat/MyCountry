@@ -17,7 +17,6 @@ class UserRepository implements UserRepositoryInterface
 
 public function register(array $data)
 {
-    // Create user
     $user = User::create([
         'full_name'    => $data['full_name'],
         'email'        => $data['email'],
@@ -26,7 +25,6 @@ public function register(array $data)
         'address'      => $data['address'],
     ]);
 
-    // Generate OTP
     $otpCode = rand(100000, 999999);
 
     OtpCode::create([
@@ -35,10 +33,7 @@ public function register(array $data)
         'expires_at' => Carbon::now()->addMinutes(10),
     ]);
 
-    // == Send OTP via Email ==
     Mail::to($user->email)->send(new SendOtpMail($otpCode));
-
-    // Generate token (Sanctum)
     $token = $user->createToken('mobile_token')->plainTextToken;
 
     return [
@@ -46,7 +41,7 @@ public function register(array $data)
         'message' => "Account created. OTP sent to your email.",
         'user'  => $user,
         'token' => $token,
-        'otp'   => $otpCode, // لأغراض التست فقط
+        'otp'   => $otpCode, 
     ];
 }
 
@@ -56,7 +51,6 @@ public function register(array $data)
 
 public function login(array $data)
 {
-    // البحث عن المستخدم
     $user = User::where('email', $data['email'])->first();
 
     if (! $user) {
@@ -66,7 +60,6 @@ public function login(array $data)
         ];
     }
 
-    // تحقق كلمة المرور
     if (! Hash::check($data['password'], $user->password)) {
         return [
             'status' => false,
@@ -74,7 +67,6 @@ public function login(array $data)
         ];
     }
 
-    // إنشاء OTP جديد
     $otpCode = rand(100000, 999999);
 
     OtpCode::updateOrCreate(
@@ -84,11 +76,8 @@ public function login(array $data)
             'expires_at' => Carbon::now()->addMinutes(10)
         ]
     );
-
-    // إرسال الإيميل
     Mail::to($user->email)->send(new SendOtpMail($otpCode));
 
-    // إنشاء توكن
     $token = $user->createToken('mobile_token')->plainTextToken;
 
     return [
@@ -96,7 +85,7 @@ public function login(array $data)
         'message' => 'Logged in successfully. OTP sent to your email.',
         'user' => $user,
         'token' => $token,
-        'otp' => $otpCode  // احذفها بالمستقبل بعد الاختبار
+        'otp' => $otpCode 
     ];
 }
 

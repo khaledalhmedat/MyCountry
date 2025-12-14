@@ -22,10 +22,8 @@ class LoginController extends Controller
         'password' => 'required'
     ]);
 
-    // استدعاء الريبو
     $response = $this->users->login($data);
 
-    // رجّع الريسبونس كما هو (يتضمن الـ OTP)
     return response()->json($response, $response['status'] ? 200 : 401);
 }
 

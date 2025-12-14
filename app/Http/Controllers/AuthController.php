@@ -19,12 +19,9 @@ class AuthController extends Controller
         $this->employeeRepository = $employeeRepository;
     }
 
-    /**
-     * تسجيل دخول الموظف
-     */
+    
     public function login(Request $request)
     {
-        // التحقق من البيانات
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string|min:8',
@@ -39,7 +36,6 @@ class AuthController extends Controller
         }
 
         try {
-            // البحث عن الموظف بالبريد الإلكتروني
             $employee = $this->employeeRepository->findEmployeeByEmail($request->email);
             
             if (!$employee) {
@@ -49,7 +45,6 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // التحقق من كلمة المرور
             if (!Hash::check($request->password, $employee->password)) {
                 return response()->json([
                     'success' => false,
@@ -57,7 +52,6 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            // إنشاء token باستخدام Sanctum
             $token = $employee->createToken('employee-token', ['employee'])->plainTextToken;
 
             return response()->json([
@@ -84,13 +78,10 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * تسجيل خروج الموظف
-     */
+
     public function logout(Request $request)
     {
         try {
-            // حذف الـ token الحالي
             $request->user()->currentAccessToken()->delete();
 
             return response()->json([
@@ -107,15 +98,12 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * الحصول على بيانات الموظف الحالي
-     */
+    
     public function me(Request $request)
     {
         try {
             $employee = $request->user();
 
-            // تحميل بيانات النوع
             $employee->load('type');
 
             return response()->json([
